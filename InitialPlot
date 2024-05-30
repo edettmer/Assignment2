@@ -1,4 +1,4 @@
-plotTable <- function(table, ylim = NULL) {
+plotTable <- function(table, ylim = NULL, axes = TRUE) {
   # Ensure the data frame contains only numeric data
   if (!all(sapply(table[-1], is.numeric))) {
     table[-1] <- lapply(table[-1], function(x) as.numeric(as.character(x)))
@@ -17,14 +17,21 @@ plotTable <- function(table, ylim = NULL) {
   # Plotting the matrix data
   matplot(years, data_matrix, type = "l", lty = 1,
           ylim = ylim,
-          xlab = "Year", ylab = "Percent", xaxt = "n", col = 1:nrow(table))
-  # Add x-axis labels
-  axis(1, at = seq(2011, 2022, by 2), labels = seq(2011, 2022, by 2))
+          xlab = "Year", ylab = "Percent", xaxt = "n", yaxt = "n", col = 1:nrow(table))
+  # Add axes if specified
+  if (axes) {
+    axis(1, at = seq(2011, 2022, by 2), labels = seq(2011, 2022, by 2))
+    axis(2)
+  }
   # legend position
   legend_x <- "topright"
   if (max(data_matrix, na.rm = TRUE) > 75) {
     legend_x <- "bottomright"
   }
+  # Add a transparent legend
+  legend(legend_x, inset=.02, legend = table$group, col = 1:nrow(table), lty = 1,
+         bty = "n", cex = 0.8, pt.cex = 0.8, text.col = "black", bg = adjustcolor("white", alpha.f = 0.5))
+}
   # Add a transparent legend
   legend(legend_x, inset=.02, legend = table$group, col = 1:nrow(table), lty = 1,
          bty = "n", cex = 0.8, pt.cex = 0.8, text.col = "black", bg = adjustcolor("white", alpha.f = 0.5))
