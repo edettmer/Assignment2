@@ -4,6 +4,10 @@ plotTable <- function(table) {
     table[-1] <- lapply(table[-1], function(x) as.numeric(as.character(x)))
   }
   years <- 2011:2022
+  # Remove "Total" rows if there is more than one row
+  if (nrow(table) > 1) {
+    table <- table[!table$group %in% c("Total"), ]
+  }
   # Convert the table to a matrix and transpose it for plotting
   data_matrix <- t(as.matrix(table[, -1]))
   # Plotting the matrix data
@@ -11,7 +15,7 @@ plotTable <- function(table) {
           ylim = range(data_matrix, na.rm = TRUE),
           xlab = "Year", ylab = "Percent", xaxt = "n", col = 1:nrow(table))
   # Add x-axis labels
-  axis(1, at = seq(2011, 2022, by = 2), labels = seq(2011, 2022, by = 2))
+  axis(1, at = seq(2011, 2022, by 2), labels = seq(2011, 2022, by 2))
   # legend position
   legend_x <- "topright"
   if (max(data_matrix, na.rm = TRUE) > 75) {
@@ -21,6 +25,3 @@ plotTable <- function(table) {
   legend(legend_x, inset=.02, legend = table$group, col = 1:nrow(table), lty = 1,
          bty = "n", cex = 0.8, pt.cex = 0.8, text.col = "black", bg = adjustcolor("white", alpha.f = 0.5))
 }
-opar <- par(mfrow = c(3, 3), mar = c(3, 3, 1, 1))
-invisible(lapply(smokingTables, plotTable))
-par(opar)
