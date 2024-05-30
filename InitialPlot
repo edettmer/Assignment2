@@ -1,4 +1,4 @@
-plotTable <- function(table) {
+plotTable <- function(table, ylim = NULL) {
   # Ensure the data frame contains only numeric data
   if (!all(sapply(table[-1], is.numeric))) {
     table[-1] <- lapply(table[-1], function(x) as.numeric(as.character(x)))
@@ -10,9 +10,13 @@ plotTable <- function(table) {
   }
   # Convert the table to a matrix and transpose it for plotting
   data_matrix <- t(as.matrix(table[, -1]))
+  # Set the y-axis limits
+  if (is.null(ylim)) {
+    ylim <- range(data_matrix, na.rm = TRUE)
+  }
   # Plotting the matrix data
   matplot(years, data_matrix, type = "l", lty = 1,
-          ylim = range(data_matrix, na.rm = TRUE),
+          ylim = ylim,
           xlab = "Year", ylab = "Percent", xaxt = "n", col = 1:nrow(table))
   # Add x-axis labels
   axis(1, at = seq(2011, 2022, by 2), labels = seq(2011, 2022, by 2))
