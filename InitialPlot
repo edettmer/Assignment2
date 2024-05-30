@@ -1,0 +1,26 @@
+plotTable <- function(table) {
+  # Ensure the data frame contains only numeric data
+  if (!all(sapply(table[-1], is.numeric))) {
+    table[-1] <- lapply(table[-1], function(x) as.numeric(as.character(x)))
+  }
+  years <- 2011:2022
+  # Convert the table to a matrix and transpose it for plotting
+  data_matrix <- t(as.matrix(table[, -1]))
+  # Plotting the matrix data
+  matplot(years, data_matrix, type = "l", lty = 1,
+          ylim = range(data_matrix, na.rm = TRUE),
+          xlab = "Year", ylab = "Percent", xaxt = "n", col = 1:nrow(table))
+  # Add x-axis labels
+  axis(1, at = seq(2011, 2022, by = 2), labels = seq(2011, 2022, by = 2))
+  # legend position
+  legend_x <- "topright"
+  if (max(data_matrix, na.rm = TRUE) > 75) {
+    legend_x <- "bottomright"
+  }
+  # Add a transparent legend
+  legend(legend_x, inset=.02, legend = table$group, col = 1:nrow(table), lty = 1,
+         bty = "n", cex = 0.8, pt.cex = 0.8, text.col = "black", bg = adjustcolor("white", alpha.f = 0.5))
+}
+opar <- par(mfrow = c(3, 3), mar = c(3, 3, 1, 1))
+invisible(lapply(smokingTables, plotTable))
+par(opar)
